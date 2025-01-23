@@ -1,68 +1,122 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Image from "../../assets/images/drawerImage.png";
 import searchImage from "../../assets/images/search.png";
-import notification from "../../assets/images/icon.png"
+import notification from "../../assets/images/icon.png";
 
 const AdminPanel = () => {
-  const [handleValue, setHandleValue] = useState()
+  const [isNavbarOpen, setNavbarOpen] = useState(true);
+  const [selectedItem, setSelectedItem] = useState("Dashboard");
+  const navigate = useNavigate(); // React Router navigation hook
+
+  const handleNavBar = () => {
+    setNavbarOpen(!isNavbarOpen);
+  };
+
+  const firstGroupItems = [
+    "Dashboard",
+    "Products",
+    "Favourites",
+    "Inbox",
+    "Order List",
+    "Product Stocks",
+  ];
+
+  const secondGroupItems = [
+    "Pricing",
+    "Calendar",
+    "To-Do",
+    "Contact",
+    "Invoice",
+    "UI Elements",
+    "Team",
+    "Table",
+  ];
+
+  const handleNavigation = (item) => {
+    setSelectedItem(item);
+    // Navigate based on item name
+    const route = item.toLowerCase().replace(/\s+/g, "-"); // Convert name to URL-friendly path
+    navigate(`/${route}`);
+  };
+
+  const renderSidebarItems = (items) =>
+    items.map((item) => (
+      <p
+        key={item}
+        onClick={() => handleNavigation(item)}
+        style={{
+          color: "#ffffff",
+          height: 50,
+          fontSize: 14,
+          margin: 5,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          backgroundColor: selectedItem === item ? "#4880FF" : "transparent",
+          borderRadius: 10,
+          cursor: "pointer",
+        }}
+      >
+        {item}
+      </p>
+    ));
 
   return (
     <div className="main">
       <div style={{ display: "flex", flexDirection: "row" }}>
-        <div
-          style={{
-            backgroundColor: "#273142",
-            width: 240,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-            padding: 20,
-          }}
-          className="navbar"
-        >
-          <text
+        {isNavbarOpen && (
+          <div
             style={{
-              color: "#4880FF",
-              fontFamily: "Nunito Sans",
-              fontWeight: "bold",
-              fontSize: 20,
-              textAlign: "center",
-              marginBottom: 20,
+              backgroundColor: "#273142",
+              width: 240,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              padding: 20,
             }}
+            className="navbar"
           >
-            DashStack
-          </text>
-          <p style={{ color: "#ffffff", height: 50, margin: 5 }}>Dashboard</p>
-          <p style={{ color: "#ffffff", height: 50, fontSize: 14, margin: 5 }}>Products</p>
-          <p style={{ color: "#ffffff", height: 50, fontSize: 14, margin: 5 }}>Favourites</p>
-          <p style={{ color: "#ffffff", margin: 5, height: 50, fontSize: 14 }}>Inbox</p>
-          <p style={{ color: "#ffffff", margin: 5, height: 50, fontSize: 14 }}>Order Lists</p>
-          <p style={{ color: "#ffffff", margin: 5, height: 50, fontSize: 14 }}>Product Stocks</p>
-          
-          <div style={{
-            alignSelf: "flex-start",
-            marginLeft: 10,
-            fontSize: 14,
-          }}>
-            <text style={{
-              fontSize: 12,
-              color: "#ffffff",
-            }}>
-              pages
-            </text>
+            <p
+              style={{
+                color: "#4880FF",
+                fontFamily: "Nunito Sans",
+                fontWeight: "bold",
+                fontSize: 20,
+                textAlign: "center",
+                marginBottom: 20,
+              }}
+            >
+              DashStack
+            </p>
+
+            {renderSidebarItems(firstGroupItems)}
+
+            <div
+              style={{
+                alignSelf: "flex-start",
+                marginLeft: 10,
+                fontSize: 14,
+                marginTop: 10,
+                marginBottom: 10,
+              }}
+            >
+              <p
+                style={{
+                  fontSize: 12,
+                  color: "#ffffff",
+                }}
+              >
+                Pages
+              </p>
+            </div>
+
+            {renderSidebarItems(secondGroupItems)}
           </div>
-          
-          <p style={{ color: "#ffffff", margin: 5, height: 50, fontSize: 14 }}>Pricing</p>
-          <p style={{ color: "#ffffff", margin: 5, height: 50, fontSize: 14 }}>Calender</p>
-          <p style={{ color: "#ffffff", margin: 5, height: 50, fontSize: 14 }}>To-Do</p>
-          <p style={{ color: "#ffffff", margin: 5, height: 50, fontSize: 14 }}>Contact</p>
-          <p style={{ color: "#ffffff", margin: 5, height: 50, fontSize: 14 }}>Invoice</p>
-          <p style={{ color: "#ffffff", margin: 5, height: 50, fontSize: 14 }}>UI Elements</p>
-          <p style={{ color: "#ffffff", margin: 5, height: 50, fontSize: 14 }}>Team</p>
-          <p style={{ color: "#ffffff", margin: 5, height: 50, fontSize: 14 }}>Table</p>
-        </div>
-        
+        )}
+
         <div
           style={{
             backgroundColor: "#273142",
@@ -82,9 +136,10 @@ const AdminPanel = () => {
             }}
           >
             <img
+              onClick={handleNavBar}
               src={Image}
-              alt="Italian Trulli"
-              style={{ marginRight: 20 }}
+              alt="Navbar Icon"
+              style={{ marginRight: 20, cursor: "pointer" }}
             />
             <div
               style={{
@@ -114,9 +169,6 @@ const AdminPanel = () => {
                   color: "#ffffff",
                   fontFamily: "Nunito Sans",
                 }}
-                onChange={(value) => {
-                  setHandleValue(value);
-                }}
               />
             </div>
           </div>
@@ -128,19 +180,12 @@ const AdminPanel = () => {
             }}
             className="notificationheader"
           >
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-            }}>
-              <img
-                src={notification}
-                alt="Notification Icon"
-                style={{
-                  height: 20,
-                  width: 20,
-                  marginRight: 10,
-                }}
-              />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
               <img
                 src={notification}
                 alt="Notification Icon"
